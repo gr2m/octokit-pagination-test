@@ -1,6 +1,4 @@
-const randomWords = require('random-words')
-// const words = randomWords(100)
-const words = randomWords(15)
+const words = 'accept,all,aloud,ancient,attached,base,became,being,board,body,bright,buffalo,call,center,certainly,chance,chapter,claws,common,conversation,cost,cry,damage,dance,dawn,deep,desk,discussion,dream,dull,end,essential,every,everyone,felt,firm,follow,fresh,further,gather,grain,great,himself,hope,hot,industry,instant,lake,library,lion,lion,little,mass,mathematics,meet,needs,no,page,particularly,partly,percent,pink,pink,police,police,pool,pool,population,prize,program,quarter,ran,ready,realize,remember,safety,search,secret,sink,slept,slow,smallest,soap,solar,speed,sum,sunlight,tent,thumb,till,time,tobacco,town,trip,usual,wall,warm,well,were,wrote'.split(',')
 const timeout = 300
 
 function getWordsWithDelay (options) {
@@ -62,7 +60,7 @@ function getAll (userOptions) {
 
 function paginate (resultPromise) {
   const iterator = resultPromise[Symbol.asyncIterator]()
-  process.stdout.write('loading')
+  console.log('loading')
   return gatherPageResults({
     results: [],
     iterator
@@ -70,7 +68,7 @@ function paginate (resultPromise) {
 }
 
 function gatherPageResults (state) {
-  process.stdout.write('.')
+  console.log('.')
   const promise = state.iterator.next()
   return promise
     .then(({value}) => {
