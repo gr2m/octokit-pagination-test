@@ -5,7 +5,9 @@ function getWordsWithDelay (options) {
   const start = (options.page - 1) * options.perPage
   const end = start + options.perPage
   const ms = Math.random() * timeout + timeout / 2
-  return new Promise(resolve => setTimeout(resolve, ms, words.slice(start, end)))
+  return new Promise(function (resolve) {
+    setTimeout(resolve, ms, words.slice(start, end))
+  })
 }
 
 function getIteratorFor (result) {
@@ -29,13 +31,15 @@ function getIteratorFor (result) {
         perPage
       })
       delete state.data
-      return dataPromise.then(data => ({
-        value: {
-          page,
-          perPage,
-          data
+      return dataPromise.then(function (data) {
+        return {
+          value: {
+            page,
+            perPage,
+            data
+          }
         }
-      }))
+      })
     }
   }
 }
@@ -43,17 +47,21 @@ function getIteratorFor (result) {
 function getAll (userOptions) {
   const options = Object.assign({page: 1, perPage: 10}, userOptions)
   const dataPromise = getWordsWithDelay(options)
-  const resultPromise = dataPromise.then(data => ({
-    page: options.page,
-    perPage: options.perPage,
-    data
-  }))
-
-  resultPromise[Symbol.asyncIterator] = () => getIteratorFor({
-    page: options.page,
-    perPage: options.perPage,
-    data: dataPromise
+  const resultPromise = dataPromise.then(function (data) {
+    return {
+      page: options.page,
+      perPage: options.perPage,
+      data
+    }
   })
+
+  resultPromise[Symbol.asyncIterator] = function () {
+    return getIteratorFor({
+      page: options.page,
+      perPage: options.perPage,
+      data: dataPromise
+    })
+  }
 
   return resultPromise
 }
@@ -71,7 +79,9 @@ function gatherPageResults (state) {
   console.log('.')
   const promise = state.iterator.next()
   return promise
-    .then(({value}) => {
+    .then(function (result) {
+      const value = result.value
+
       if (!value) {
         return state.results
       }
